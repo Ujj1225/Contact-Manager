@@ -7,16 +7,25 @@
 // But a better way to do this is using a middleware which is an express async handler
 // It will handle our exceptions inside the async express routes
 // This middleware will pass the error to errorHandler which we have created
-const asyncHandler = require('express-async-handler');
+const asyncHandler = require("express-async-handler");
 // We wrap all the functions in asynchandler
 
+const Contact = require("../models /contactModel");
+
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "Get all contacts" });
+  const contacts = await Contact.find({ user_id: req.user.id });
+  res.status(200).json(contacts);
 });
 
+
 const getContactID = asyncHandler(async (req, res) => {
-  res.json({ message: `Get contact for id: ${req.params.id}` });
-});
+  const contacts = await Contact.findById(req.params.id);
+  if (!contacts) {
+    res.status(404);
+    throw new Error("Contact not found!");
+  }
+  res.status(200).json(contacts); });
+
 
 const postContact = asyncHandler(async (req, res) => {
   console.log(req.body);
@@ -26,7 +35,12 @@ const postContact = asyncHandler(async (req, res) => {
     // Syntax for error
     throw new Error("All fields are mandatory");
   }
-  res.json({ message: "Create contacts" });
+  const contact = await Contact.create({
+    name,
+    email,
+    phone,
+  });
+  res.json(contact);
 });
 
 const putContact = asyncHandler(async (req, res) => {
