@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const registerUser = asyncHandler(async (req, res) => {
   // Now setting up the functionality to register a user
   // Destructuring name, email and password from request body
+  // console.log('register user working');
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     res.status(400);
@@ -73,7 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: "30m" }
     );
     res.status(200).json({ accessToken });
   } else {
