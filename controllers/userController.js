@@ -60,16 +60,16 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
   // Here is the problem user.password is not being accessed.
-  if (checkUser && (await bcrypt.compare(password, user.password))) {
+  if (checkUser && (await bcrypt.compare(password, checkUser.password))) {
     // Creating accessToken for logged in users
     // The jwt signin takes a lot of parameters like user info, access token secret, expiration time of token
     console.log('ok');
     const accessToken = jwt.sign(
       {
         user: {
-          username: user.username,
-          email: user.email,
-          id: user.id,
+          username: checkUser.username,
+          email: checkUser.email,
+          id: checkUser.id,
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
@@ -83,9 +83,9 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 // @desc  Current user
-// @route POST /api/users/current
+// @route GET /api/users/current
 // @access private
 const currentUser = asyncHandler(async (req, res) => {
-  res.json({ message: "Current user information" });
+  res.json(req.user);
 });
 module.exports = { registerUser, loginUser, currentUser };
