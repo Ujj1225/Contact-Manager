@@ -16,7 +16,6 @@ const registerUser = asyncHandler(async (req, res) => {
   // The statement which follows this comment is used to find if the email is already used
   const userAvailable = await user.findOne({email});
   // There is a issue between line 16 and 17
-  console.log(req.body);
   if(userAvailable){
     res.status(400);
     throw new Error("User already registered!")
@@ -29,15 +28,15 @@ const registerUser = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   // 10 is the number of solved rounds
   console.log("Hashed Password: ", hashedPassword);
-  const user = await user.create({
+  const newUser = await user.create({
     username,
     email, 
     password: hashedPassword
   });
-  console.log(`User created ${user}`);
+  console.log(`User created ${newUser}`);
   // Now for response i dont want to send full user but everything other than password 
-  if(user){
-    res.status(201).json({_id : user.id, email: user.email})
+  if(newUser){
+    res.status(201).json({_id : newUser.id, email: newUser.email})
     // 201 means resource is successfully created
   }else{
     res.status(400)
